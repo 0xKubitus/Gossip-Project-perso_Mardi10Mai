@@ -1,0 +1,109 @@
+COMMENT FAIRE UN PROJET RUBY ON RAILS ?
+
+		1) $ rails new -d postgresql NomDuProjet --skip-turbolinks (/!\ faire un alias dans oh my zhs pour cette commande /!\)
+
+
+
+		2) Gemfile <- ajouter gem 'faker' (pratique pour créer des seeds)
+
+
+
+		3) $ bundle install
+
+
+
+		4) $ rails db:create
+
+
+
+		5) On fait un schéma sur Lucidchart.com en réfléchissant bien aux liens/relations entre chaque objet :
+Il est important de bien définir quels objets/models ont des relations N - N = ils ont des relations avec d'autres objets ou non ?
+
+=> S'ils n'intéragissent avec aucun autre objet, on utilisera la technique 'class_names".
+=> S'ils intéragissent avec d'autres objets, alors on va créer une 'join_table_Aobjets_Bobjets'.
+
+(noter les différentes relations sur un papier ou ds. un fichier et lister aussi les attributs de chaque objet)
+
+
+
+		6) Créer chaque table et models :
+
+	$ rails g model NomDuModel attribut1:type attribut2:type attr3:type...etc 
+	
+(types d'attributs = string, integer, float, text (bcp de caractères), datetime, etc ...)
+
+
+=> Faire des tests dans la console avec: 'rails console --sandbox' (faire un 'rails db:migrate au préalable)
+('--sandbox' sert à ne rien enregistrer ds. la DB et donc ne pas avoir à faire de 'rails db:reset' pour réinitialiser la DB si on test des 'Model.create')
+
+
+
+		7) Ajouter les relations entre chaque table/migration et chaque objet/model :
+
+		a) relations 1 - N
+=> dans la migration de 'N', ajouter :
+
+t.belongs_to :model, index :true ( = 'N' belongs to model '1')
+
+
+		b) relations N - N type "class_names"
+
+			*REPRENDRE L'EXEMPLE CI-DESSOUS POUR EN FAIRE UN PLUS CONCIS* (peut être illustrer avec Lucidchart ?)
+
+Imagine que tu veux mettre en place un model pour une application de messagerie. Tu veux que tes utilisateurs puissent envoyer des messages privés ET en recevoir. Tu auras donc, pour chaque message, un sender et un recipient, mais qui seront tous les deux du même type User. Si tu utilises tes connaissances actuelles, tu vas te retrouver avec un objet message avec des users qui lui sont liés sans pouvoir différencier l'expéditeur du destinataire : faire un message.users va pas t'aider… Ce serait bien de pouvoir faire message.sender ou message.recipient. Eh bien c’est justement l’intérêt de class_name, qui va te permettre de renommer tes méthodes d'association. Voyons comment ce serait implémenté.
+
+Imaginons que la table users existe déjà avec son model User. Pour rajouter les messages, on crée un model PrivateMessage avec une migration pour créer la table private_messages :
+
+class CreatePrivateMessages < ActiveRecord::Migration[5.2]
+  def change
+    create_table :private_messages do |t|
+      t.references :recipient, index: true
+      t.references :sender, index: true
+
+      t.timestamps
+    end
+  end
+end
+Tu vois que, directement, on annonce que la table contient des foreign key de type recipient et sender… Seul petit problème : ces tables n'existent pas, car les destinataires et expéditeurs sont des utilisateurs avant tout ! C'est là que la méthode class_name intervient. Pour l'implémenter, on va dans le model (fichier private_message.rb) et on fait :
+
+class PrivateMessage < ApplicationRecord
+  belongs_to :sender, class_name: "User"
+  belongs_to :recipient, class_name: "User"
+end
+Et dans la classe User, tu mettras :
+
+class User < ApplicationRecord
+  has_many :sent_messages, foreign_key: 'sender_id', class_name: "PrivateMessage"
+  has_many :received_messages, foreign_key: 'recipient_id', class_name: "PrivateMessage"
+end
+
+
+		c) relations N - N "JoinTable"
+
+			*INSERER UN SCREENSHOT DU CADRE QUI CONCERNE LE LIEN ENTRE GOSSIP ET TAG DANS MON SCHEMA GOSSIP PROJECT*
+			
+		
+		
+		8) Faire des tests vite fait pour s'assurer que tout fonctionne, puis créer des objets avec des attributs aléatoires dans le fichier "db/seeds.rb"
+
+P.S.1: penser à ajouter des : 'Model.destroy_all' au début du fichier, afin de supprimer tout éventuel objet enregistré dans la bdd.
+P.S.2: utiliser : 'X.times do {|i| *ton code ici* } c'est la base ! | exemple : Model.create(attribut:type)
+P.S.3: la gem Faker (chercher sur github) permet de générer de tonnes de contenus aléatoires différents ! ;)
+
+
+		9) $ rails db:seed (pour tester que nos seeds fonctionnent bien)
+		
+		
+		
+		10) on va pouvoir commencer à réfléchir aux views que l'on veut afficher / aux routes à mettre en place / aux controllers qui vont gérer les méthodes de chaque objet/model ... 
+		
+		* A COMPLETER !!! * 
+		
+	-> comment créer un controller
+	-> comment faire une route vers page statique
+	-> router vers pages dynamiques
+	-> les controllers et les méthodes et l'usage de 'params'
+	-> expliquer l'usage de 'rails routes'
+	-> utiliser 'ressources' dans les routes dynamiques !!!
+	-> ...
+		
