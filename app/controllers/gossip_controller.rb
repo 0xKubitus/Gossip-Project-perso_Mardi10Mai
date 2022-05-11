@@ -7,4 +7,13 @@ class GossipController < ApplicationController
     @gossip = Gossip.find(params[:id]) # permet de choisir le gossip à afficher selon l'id du param et d'afficher la page de ce gossip en particulier
   end
 
+  def new
+
+  end
+
+  def create
+
+  end
+
+
 end
