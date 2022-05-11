@@ -23,7 +23,7 @@ PrivateMessage.destroy_all
 
 # Créer 20 Gossips random, liés chacun à un user :
 20.times do |x| 
-  gossip = Gossip.new(title: Faker::Lorem.words(number: 4),content: Faker::Lorem.sentence(word_count: 8))
+  gossip = Gossip.new(title: Faker::Lorem.characters(number: 3..14),content: Faker::Movie.quote)
   gossip.user_id = User.all.sample.id
   gossip.save
 end

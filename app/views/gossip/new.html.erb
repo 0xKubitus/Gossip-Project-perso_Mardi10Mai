@@ -2,7 +2,7 @@
 
   <%= form_tag url_for(action: 'create'), method: "post" do %>
 
-    <!-- ci-dessous = authenticity token (cf. cours THP du Mardi semaine 3) -->      
+    <!-- ci-dessous = authenticity token (cf. cours THP du Mardi semaine) -->      
       <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">    
 
         <%= label_tag 'Titre :' %>
@@ -13,8 +13,16 @@
         <%= text_area_tag 'content', @gossip.content %>
         <br /> <br />
 
-        <%= submit_tag "C'est dans la boite !" %>   
+        <%= submit_tag "C'est dans la boite !" %>     
 
-          
+<% if @gossip.errors.any? %>
+
+          <% if @gossip.errors.any? %>
+            <% @gossip.errors.full_messages.each do |message| %>
+                  <div class="container alert alert-danger d-flex align-items-center p-1 mt-1" role="alert"><%= message %></div>
+              <% end %>  
+            <% end %>
+          <% end %>  
+
 
     <% end %>

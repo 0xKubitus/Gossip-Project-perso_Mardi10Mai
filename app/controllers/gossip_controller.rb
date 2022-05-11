@@ -14,7 +14,8 @@ class GossipController < ApplicationController
   def create # ici 'params' sert à récupérer les inputs de l'utilisateur dans le formulaire de la page 'gossip/new' et créé une entre en BDD avec ces données.
     @gossip = Gossip.new( 
       'title' => params[:title],
-      'content' => params[:content]  
+      'content' => params[:content],
+      'user_id' => User.all.sample.id # (pour l'instant on prend un id au hasard parmis nos Users)
     )
   
     if @gossip.save # on tente de voir si la création a bien fonctionné :
