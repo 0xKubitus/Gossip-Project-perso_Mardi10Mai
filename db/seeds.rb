@@ -14,20 +14,21 @@ Gossip.destroy_all
 Tag.destroy_all
 PrivateMessage.destroy_all
 
-
+# Creer 10 random Cities, Users et Tags:
 10.times { |x| city = City.create(name: Faker::Address.city, zip_code: Faker::Address.zip_code) }
  
 10.times { |x| user = User.create(first_name: Faker::Name.first_name, last_name: Faker::Name.last_name, description: Faker::Quotes::Shakespeare.hamlet_quote, email: Faker::Internet.email, age: rand(18..99), city_id: City.all.sample) }
 
 10.times { |x| tag = Tag.create(title: Faker::Lorem.words) }
 
+# Créer 20 Gossips random, liés chacun à un user :
 20.times do |x| 
   gossip = Gossip.new(title: Faker::Lorem.words(number: 4),content: Faker::Lorem.sentence(word_count: 8))
   gossip.user_id = User.all.sample.id
   gossip.save
 end
 
-
+# Mettre un tag sur chaque gossip:
 40.times do |x|
   join = JoinTableGossipTag.new(
     gossip_id: Gossip.all.sample.id,
@@ -35,19 +36,17 @@ end
   join.save
 end
 
-
-=begin
-
-# Mettre un tag sur chaque gossip:
-Gossip.all.each do |gossip|
-  JoinTableGossipTags.create(gossip: gossip, tag: Tag.all.sample)
-end
-
+# Créer 10 MPs random, liés chacun à deux users -> un 'sender' et un 'recipient' :
 10.times do |x|
   message = PrivateMessage.new(sender: User.all.sample, recipient: User.all.sample, content: Faker::Lorem.words(number: 5)) 
+  message.sender_id = User.all.sample.id
+  message.recipient_id = User.all.sample.id
+  message.save
 end
 
 
+
+=begin
 
 Gossip.all.each do |comments|
   5.times do
