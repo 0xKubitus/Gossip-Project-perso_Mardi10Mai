@@ -28,14 +28,15 @@ PrivateMessage.destroy_all
 end
 
 
-
-=begin
-
 40.times do |x|
-  join = JoinTableGossipTag.create(gossip_id: Gossip.all., tag_id: Tag.all.sample.id)
+  join = JoinTableGossipTag.new(
+    gossip_id: Gossip.all.sample.id,
+    tag_id: Tag.all.sample.id)
+  join.save
 end
 
 
+=begin
 
 # Mettre un tag sur chaque gossip:
 Gossip.all.each do |gossip|
