@@ -1,5 +1,11 @@
 class Gossip < ApplicationRecord
   
+  validates :title, 
+    presence: true,
+    length: { in: 3..14 }
+
+  validates :content, presence: true
+
   belongs_to :user, optional: true #<- à mettre si l'on veut pouvoir autoriser la creation de gossip sans auteur ?)
   
   has_many :join_table_gossip_tags
