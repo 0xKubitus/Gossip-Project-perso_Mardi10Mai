@@ -8,7 +8,7 @@ class GossipController < ApplicationController
   end
 
   def new
-
+    @gossip = Gossip.new
   end
 
   def create
@@ -16,4 +16,6 @@ class GossipController < ApplicationController
   end
 
 
-end
+
+
+end # fin de la class GossipController

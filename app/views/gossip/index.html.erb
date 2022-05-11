@@ -21,9 +21,12 @@
           <p class="card-text">Auteur : <%= gossip.user.first_name%></p>
         </div>
         <div class="col-4 d-flex justify-content-end align-items-center">
-          <p><%= link_to 'Lire ce Gossip', show_gossip_path(gossip) %></p>
+          <p><%= link_to 'Ouvrir ce Gossip', show_gossip_path(gossip) %></p>
+          <%= form_tag gossip_path(gossip.id), method: "delete", style: "display: inline" do %>
+            
         </div>
 
+        <div><%= submit_tag "Supprimer cette rumeur" %><%end%></div>
 
       </div>
 
